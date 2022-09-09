@@ -1,0 +1,25 @@
+# media
+*.jpg
+*.jpeg
+*.png
+*.JPG
+*.PNG
+*.mov
+*.MOV
+*.mp4
+*.MP4
+*.zip
+
+*.json
+
+# local env
+env/
+.env
+
+# ml proejct stuff
+Checkpoints/
+*.mlproj/
+*.npy
+mnist-t*.tfrecord*
+
+.DS_Store
