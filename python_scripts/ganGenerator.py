@@ -44,7 +44,7 @@ BATCH_SIZE = int(os.environ.get("BATCH_SIZE", 32))
 # how large of a buffer to use in bytes?
 BUFFER_SIZE = int(os.environ.get("BUFFER_SIZE", 60000))
 
-print(f"Will generate {GENERATE_SQUARE}px square images.")
+print(f"Will generate {GENERATE_SQUARE}px square images whith {EPOCHS} epochs.")
 
 
 def hms_string(sec_elapsed):

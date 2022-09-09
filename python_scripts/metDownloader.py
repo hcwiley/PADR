@@ -3,18 +3,27 @@ import os
 import time
 import glob
 import re
+import json
 
-query = "landscape"
-IMG_DIR = os.path.join(os.path.abspath('./'), "../MET")
-MAX_OBJECTS = 2000
+query = os.environ.get("query", "landscape")
+IMG_DIR = os.environ.get("IMG_DIR", os.path.join(
+    os.path.abspath('./'), "../MET/{}/".format(query)))
+MAX_OBJECTS = int(os.environ.get("MAX_OBJECTS", 2000))
+
+if not os.path.exists(IMG_DIR):
+  os.makedirs(IMG_DIR)
 
 print("Downloading {} images from MET to {}".format(MAX_OBJECTS, IMG_DIR))
 
 # get all the objects matching this query
 response = requests.get(
-    "https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&q={}".format(query))
+    "https://collectionapi.metmuseum.org/public/collection/v1/search?medium=Paintings&hasImages=true&q={}".format(query))
 objectIDs = response.json()['objectIDs']
 
+if os.environ.get("validation", False) is True:
+  print('Found {} objects'.format(len(objectIDs)))
+  print(json.dumps(objectIDs, indent=2))
+  exit()
 imageInfos = []
 
 # check which images we've got downloaded already
@@ -65,7 +74,7 @@ for uid in objectIDs:
   time.sleep(2)
 
   # if we've reached the max number of objects, stop
-  if len(imageInfos) == MAX_OBJECTS:
+  if len(imageInfos) >= MAX_OBJECTS:
     break
 
   print("Downloaded {} ({}/{})".format(uid, len(imageInfos), MAX_OBJECTS))
