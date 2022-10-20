@@ -9,8 +9,8 @@ import imageUtils
 
 # append the linedraw module to the path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'linedraw'))
-
-import linedraw
+# autopep8 don't move this line
+import linedraw  # noqa: E402
 
 py_arg = argparse.ArgumentParser()
 
@@ -49,7 +49,8 @@ cv2.imwrite(output_path+'.sharpened.png', img)
 # convert img to grey
 img_grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 # get threshold image
-ret, thresh_img = cv2.threshold(img_grey, args.thresh, 255, cv2.THRESH_BINARY)
+ret, thresh_img = cv2.threshold(
+    img_grey, int(args.thresh), 255, cv2.THRESH_BINARY)
 
 # save the debug image
 cv2.imwrite(output_path+'.threshed.png', thresh_img)
