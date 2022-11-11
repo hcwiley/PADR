@@ -8,7 +8,7 @@ echo -e "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDkPle9XRNE4sxPX4HBZLC5Mh/N7t4RnpK
 
 
 # install some brew packages
-brew install python git rbenv nvm cmake tmux
+brew install git rbenv nvm cmake tmux
 
 # setup nvm
 mkdir -p ~/.nvm
