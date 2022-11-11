@@ -6,6 +6,11 @@ this is a repo of scripts, notes, utilities for my machine learning projects
 
 Pretty sure this is the guide i used for setting up my m1 mac: https://betterprogramming.pub/installing-tensorflow-on-apple-m1-with-new-metal-plugin-6d3cb9cb00ca
 
+I've installed all my conda reqs to a env named `ldm`
+
+```bash
+conda activate ldm
+```
 
 ## Repos i'm into right now
 - https://github.com/hcwiley/CycleGAN-Tensorflow-2
@@ -15,3 +20,4 @@ Pretty sure this is the guide i used for setting up my m1 mac: https://betterpro
 ## Sources
 
 - linedraw: https://github.com/LingDong-/linedraw
+- 
