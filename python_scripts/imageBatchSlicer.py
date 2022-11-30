@@ -1,4 +1,5 @@
 from math import floor
+import glob
 import shutil
 from PIL import Image
 import numpy as np
@@ -42,7 +43,7 @@ def main():
       # clean use shutil.rmtree
       shutil.rmtree(output_dir, ignore_errors=True)
     # make sure the output directory exists
-    py.mkdir(output_dir)
+    os.makedirs(output_dir, exist_ok=True)
 
   # get the width and height of the desired output image
   width = int(args.width)
@@ -61,7 +62,7 @@ def main():
   extensions = ["jpg", "jpeg", "png", "tif", "tiff"]
   img_paths = []
   for ext in extensions:
-    ext_imgs = py.glob(input_dir, '*.{}'.format(ext))
+    ext_imgs = glob(input_dir, '*.{}'.format(ext))
     img_paths.extend(ext_imgs)
 
   # loop over the images
