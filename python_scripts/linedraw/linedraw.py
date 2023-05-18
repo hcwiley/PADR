@@ -258,6 +258,9 @@ if __name__ == "__main__":
   parser.add_argument('--contour_simplify', dest='contour_simplify',
                       default=contour_simplify, action='store', nargs='?', type=int,
                       help='Level of contour simplification. eg. 1, 2, 3')
+  parser.add_argument('--resolution', dest='resolution',
+                      default=resolution, action='store', nargs='?', type=int,
+                      help='Image resolution to resize to. eg. 512, 1024, 2048')
 
   args = parser.parse_args()
 
@@ -267,5 +270,6 @@ if __name__ == "__main__":
   hatch_size = args.hatch_size
   contour_simplify = args.contour_simplify
   show_bitmap = args.show_bitmap
+  resolution = args.resolution
   no_cv = args.no_cv
   sketch(args.input_path)

@@ -9,6 +9,22 @@
 *.mp4
 *.MP4
 *.zip
+*.svg
+*.gif
+*.psd
+*.ai
+*.pdf
+*.tif
+*.tiff
+*.eps
+*.sketch
+*.wav
+*.mp3
+*.m4a
+*.ogg
+*.flac
+*.aif
+*.aiff
 
 *.json
 
@@ -21,5 +37,19 @@ Checkpoints/
 *.mlproj/
 *.npy
 mnist-t*.tfrecord*
+datasets/
 
+# compiled binaries
+*.o
+*.so
+*.out
+*.exe
+
+# python bytecode
+*.pyc
+*.pyo
+*.ipynb
+
+# hidden and swap files
 .DS_Store
+._*

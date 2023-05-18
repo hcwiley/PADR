@@ -98,8 +98,10 @@ def main():
     if args.overwrite:
       out_path = img_path
     else:
-      out_path = os.path.join(output_dir, '{}_{}-{}_{}-{}.jpg'.format(
-          img_no_ext, x, y, x+crop_width, y+crop_height))
+      out_path = os.path.join(output_dir, '{}.jpg'.format(
+          img_no_ext))
+      # out_path = os.path.join(output_dir, '{}_{}-{}_{}-{}.jpg'.format(
+      #     img_no_ext, x, y, x+crop_width, y+crop_height))
 
     # write the cropped image to disk
     crop.save(out_path)

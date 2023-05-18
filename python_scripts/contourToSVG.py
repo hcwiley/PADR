@@ -50,9 +50,9 @@ def main(image_path):
   img = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
 
   # apply a sharpening filter
-  img = imageUtils.sharpenImg(img)
-  if save_debug:
-    cv2.imwrite(output_path+'.sharpened.png', img)
+  # img = imageUtils.sharpenImg(img)
+  # if save_debug:
+  #   cv2.imwrite(output_path+'.sharpened.png', img)
 
   # convert img to grey
   img_grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)

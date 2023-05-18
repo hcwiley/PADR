@@ -6,9 +6,30 @@ import datetime
 
 import imageUtils
 
+'''
+example usages:
+
+from intel imac:
+$ python screen_record_to_ml_video.py \
+  --ml_model_dir ../../CycleGAN-Tensorflow-2/saved_models/landscape2cole_sliced_v3 \
+  --ml_python_path $(which python) \
+  --path_to_cyclegan ../../CycleGAN-Tensorflow-2 \
+  --ffmpeg_path=/usr/local/bin/ffmpeg \
+  --input_video ../assets/where-am-i-from/IMG_6115.mp4
+
+from main m1 macbook pro:
+input_video='/Users/hcwiley/Dropbox/art/ml/source-videos/IMG_6117.mp4'
+python screen_record_to_ml_video.py --input_video $input_video
+'''
+
 py_arg = argparse.ArgumentParser()
 
-# get environment variables or fallback to defaults
+# TODO: add env vars for:
+#   - ml_model_dir
+#   - ml_python_path
+#   - path_to_cyclegan
+#   - ffmpeg_path
+
 py_arg.add_argument('--input_video')
 py_arg.add_argument('--output_video', default=None)
 py_arg.add_argument('--work_dir', default=None)

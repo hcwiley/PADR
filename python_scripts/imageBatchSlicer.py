@@ -20,7 +20,8 @@ py_arg.add_argument('--y_splits', default='2')
 py_arg.add_argument('--crop_size', default=None)
 py_arg.add_argument('--random_seed', default=42)
 py_arg.add_argument('--border', default=0.05)
-py_arg.add_argument('--input_dir')
+py_arg.add_argument('--input_dir', default=None)
+py_arg.add_argument('--input_image', default=None)
 py_arg.add_argument('--output_dir', default=None)
 py_arg.add_argument('--clear_output', default=False)
 
@@ -30,8 +31,25 @@ args = py_arg.parse_args()
 def main():
   # the main function
 
-  # get the input and output directories
-  input_dir = args.input_dir
+  if args.input_dir is None and args.input_image is None:
+    print("Please specify an input directory or image")
+    sys.exit(1)
+  
+  img_paths = []
+  input_dir = None
+  if args.input_image is not None:
+    img_paths.append(args.input_image)
+    os.path.abspath(os.path.dirname(img_paths[0]))
+  else:
+    # get the input and output directories
+    input_dir = args.input_dir
+    # get the images with a variety of extensions
+    extensions = ["jpg", "jpeg", "png", "tif", "tiff"]
+    img_paths = []
+    for ext in extensions:
+      ext_imgs = glob.glob('{}/*.{}'.format(input_dir, ext))
+      img_paths.extend(ext_imgs)
+
   output_dir = args.output_dir
 
   # check if we are saving inplace
@@ -44,7 +62,7 @@ def main():
       shutil.rmtree(output_dir, ignore_errors=True)
     # make sure the output directory exists
     os.makedirs(output_dir, exist_ok=True)
-
+  
   # get the width and height of the desired output image
   width = int(args.width)
   height = int(args.height)
@@ -57,13 +75,6 @@ def main():
   crop_size = None
   if args.crop_size is not None:
     crop_size = int(args.crop_size)
-
-  # get the images with a variety of extensions
-  extensions = ["jpg", "jpeg", "png", "tif", "tiff"]
-  img_paths = []
-  for ext in extensions:
-    ext_imgs = glob(input_dir, '*.{}'.format(ext))
-    img_paths.extend(ext_imgs)
 
   # loop over the images
   for img_path in img_paths:
@@ -126,8 +137,10 @@ def main():
         y = int(floor((float(i_y) / float(y_splits)) * float(img_height)))
 
         # now add/subtract the random_seed
-        x += np.random.randint(-args.random_seed, args.random_seed)
-        y += np.random.randint(-args.random_seed, args.random_seed)
+        random_seed = int(args.random_seed)
+        if random_seed > 0:
+          x += np.random.randint(-random_seed, random_seed)
+          y += np.random.randint(-random_seed, random_seed)
 
         # clip to make sure we don't go out of bounds
         x = np.clip(x, 0, img_width - crop_width)
@@ -141,7 +154,7 @@ def main():
         crop = imageUtils.cropImage(img, x, y, crop_width, crop_height)
 
         # construct the path to the output image
-        p = py.join(output_dir, '{}_{}-{}_{}-{}.jpg'.format(
+        p = os.path.join(output_dir, '{}_{}-{}_{}-{}.jpg'.format(
             img_no_ext, x, y, x+crop_width, y+crop_height))
 
         # write the cropped image to disk
