@@ -16,9 +16,10 @@ py_arg.add_argument('--width', default=None)
 py_arg.add_argument('--height', default=None)
 py_arg.add_argument('--resize_width', default=None)
 py_arg.add_argument('--resize_height', default=None)
-py_arg.add_argument('--x_splits', default='2')
-py_arg.add_argument('--y_splits', default='2')
 py_arg.add_argument('--crop_size', default=None)
+py_arg.add_argument('--resize', default=0)
+py_arg.add_argument('--x_splits', default=2)
+py_arg.add_argument('--y_splits', default=2)
 py_arg.add_argument('--input_dir')
 py_arg.add_argument('--output_dir', default=None)
 py_arg.add_argument('--clear_output', default=False)
@@ -65,6 +66,10 @@ def main():
   if args.height is not None:
     height = int(args.height)
 
+  resize = int(args.resize)
+  x_splits = int(args.x_splits)
+  y_splits = int(args.y_splits)
+
   # get the images with a variety of extensions
   extensions = ["jpg", "jpeg", "png", "tif", "tiff"]
   img_paths = []
@@ -86,6 +91,20 @@ def main():
     width = maxX
     height = maxY
 
+  # check if we are scaling the dst coords
+  x_scale = 1
+  y_scale = 1
+  if resize != 0:
+    # (512/(900/3))*900
+    x_scale = (resize / (width / x_splits))
+    y_scale = (resize / (height / y_splits))
+    width *= x_scale
+    height *= y_scale
+
+  # ensure ints
+  width = int(width)
+  height = int(height)
+
   full_img_path = '{}/full.jpg'.format(output_dir)
   print("compiling a full image of size {}x{} to {}".format(
       width, height, full_img_path))
@@ -101,6 +120,29 @@ def main():
 
     # open the image
     img = cv2.imread(img_path)
+
+    # check if we are scaling the dst coords
+    if resize != 0:
+      x0 *= x_scale
+      y0 *= y_scale
+      x1 *= x_scale
+      y1 *= y_scale
+
+    # ensure ints for all the units
+    x0 = int(x0)
+    y0 = int(y0)
+    x1 = int(x1)
+    y1 = int(y1)
+
+    dst_width = x1 - x0
+    dst_height = y1 - y0
+
+    # print('x0: {}, y0: {}, x1: {}, y1: {}, dst_width: {}, dst_height: {}'
+    #       .format(
+    #           x0, y0, x1, y1, dst_width, dst_height))
+
+    if img.shape[0] != dst_height or img.shape[1] != dst_width:
+      img = cv2.resize(img, (dst_width, dst_height))
 
     # write the img to the full image
     full_img[y0:y1, x0:x1] = img

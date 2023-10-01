@@ -43,6 +43,7 @@ py_arg.add_argument('--ml_python_path',
                     default='/Users/hcwiley/miniforge3/bin/python')
 py_arg.add_argument('--x_splits', default='2')
 py_arg.add_argument('--y_splits', default='2')
+py_arg.add_argument('--resize', default='512')
 
 args = py_arg.parse_args()
 
@@ -115,8 +116,18 @@ if not os.path.exists(path_to_cyclegan) or not os.path.isfile(os.path.join(path_
 ####
 
 # imageBatchSlicer
-slicer_cmd = 'python {}/imageBatchSlicer.py --input_image {} --x_splits {} --y_splits {} --random_seed 0 --border 0 --output_dir {} --clear_output 1'.format(py_scripts_dir,
-                                                                                                                                                             input_image, x_splits, y_splits, output_images_slices)
+slicer_cmd = 'python {}/imageBatchSlicer.py --input_image {} --x_splits {} --y_splits {} --random_seed 0 --border 0 --output_dir {} --clear_output 1'.format(
+    py_scripts_dir,
+    input_image,
+    x_splits,
+    y_splits,
+    output_images_slices)
+
+resize = args.resize
+resize_cmd = 'echo "not resizing"'
+if resize != '0':
+  resize_cmd = 'for img in $(find {dir} -name "*.jpg") ; do convert $img -resize {resize}x{resize}! $img ; done'.format(
+      dir=output_images_slices, resize=args.resize)
 
 # convert images to ml images
 run_ml_cmd = '{} {}/run.py --models_dir {} --input_dir {} --output_dir {}'.format(
@@ -126,14 +137,19 @@ run_ml_cmd = '{} {}/run.py --models_dir {} --input_dir {} --output_dir {}'.forma
 split_cmd = 'for img in $(find {dir} -name "*.jpg") ; do convert $img -crop 512x512+512+0 {dir}/drawing/$(basename $img) ; convert $img -crop 512x512+1024+0 {dir}/painting/$(basename $img) ; done'.format(dir=output_images_ml)
 
 # compile the slices
-compile_drawing_cmd = 'python {py_scripts}/compileSlices.py --input_dir {dir} --output_dir {dir}'.format(
+compile_drawing_cmd = 'python {py_scripts}/compileSlices.py --input_dir {dir} --output_dir {dir} --resize {resize} --x_splits {x_splits} --y_splits {y_splits}'.format(
     py_scripts=py_scripts_dir,
-    dir=output_images_ml_drawing)
+    dir=output_images_ml_drawing,
+    resize=resize,
+    x_splits=x_splits,
+    y_splits=y_splits
+    )
 
-compile_painting_cmd = 'python {py_scripts}/compileSlices.py --input_dir {dir} --output_dir {dir}'.format(
-    py_scripts=py_scripts_dir,                          dir=output_images_ml_painting)
+compile_painting_cmd = compile_drawing_cmd.replace(
+    output_images_ml_drawing, output_images_ml_painting)
 
-cmds = [slicer_cmd, run_ml_cmd, split_cmd,
+cmds = [slicer_cmd, resize_cmd, run_ml_cmd, split_cmd,
+        'fix_resize',
         compile_drawing_cmd, compile_painting_cmd]
 
 # getting ready to make a bunch stuff. let's get into position

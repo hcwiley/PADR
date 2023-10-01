@@ -34,7 +34,7 @@ def main():
   if args.input_dir is None and args.input_image is None:
     print("Please specify an input directory or image")
     sys.exit(1)
-  
+
   img_paths = []
   input_dir = None
   if args.input_image is not None:
@@ -62,14 +62,22 @@ def main():
       shutil.rmtree(output_dir, ignore_errors=True)
     # make sure the output directory exists
     os.makedirs(output_dir, exist_ok=True)
-  
+
   # get the width and height of the desired output image
   width = int(args.width)
   height = int(args.height)
 
   # get the number of splits
-  x_splits = int(args.x_splits)
-  y_splits = int(args.y_splits)
+  # check for auto first
+  if args.x_splits == 'auto':
+    # need to get the y_splits
+    x_splits = 'auto'
+  else:
+    x_splits = int(args.x_splits)
+  if args.y_splits == 'auto':
+    y_splits = 'auto'
+  else:
+    y_splits = int(args.y_splits)
 
   # check if crop_size is set
   crop_size = None
@@ -83,7 +91,41 @@ def main():
 
     # load the image
     img = Image.open(img_path, 'r')
-    
+
+    # check if either x_splits or y_splits is auto
+    if x_splits == 'auto':
+      # get the y_splits resulting y height per square and match the x_splits
+      # first determine the resulting height per square
+      y_height = int(floor(img.height / y_splits))
+      # calculate the x_splits based on the y_height to get the closest to a square
+      x_splits = (img.width / y_height)
+      # if x_splits is a float pad the image left and right to make it an int
+      if x_splits % 1 != 0:
+        # calculate the padding needed
+        padding = int(floor((x_splits % 1) * y_height))
+        print('padding: {}'.format(padding))
+        # resize image to be the new width
+        img.crop((padding, 0, img.width + padding, img.height))
+        x_splits = int(x_splits) + 1
+    elif y_splits == 'auto':
+      # get the x_splits resulting x width per square and match the y_splits
+      # first determine the resulting width per square
+      x_width = int(floor(img.width / x_splits))
+      # calculate the y_splits based on the x_width to get the closest to a square
+      y_splits = (img.height / x_width)
+      # if y_splits is a float pad the image top and bottom to make it an int
+      if y_splits % 1 != 0:
+        # calculate the padding needed
+        padding = int(floor((y_splits % 1) * x_width))
+        print('padding: {}'.format(padding))
+        # resize image to be the new width
+        img.crop((0, padding, img.width, img.height + padding))
+        y_splits = int(y_splits) + 1
+
+    # ensure x_splits and y_splits are ints
+    x_splits = int(x_splits)
+    y_splits = int(y_splits)
+
     # make sure it's RGB
     img = imageUtils.convertToRGB(img)
 
