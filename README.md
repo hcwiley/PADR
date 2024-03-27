@@ -1,6 +1,13 @@
-# ml-sandbox
+# PADR
 
-this is a repo of scripts, notes, utilities for my machine learning projects
+this is a repo of scripts, notes, utilities for PADR.
+
+PADR? Painting and drawing robot.
+
+A variety of machine learning, computer vision, mechantronics, firmware, and other fun stuff are involved!
+
+Checkout my [Notion build page](https://hcwiley.notion.site/PADR-Painting-and-Drawing-robot-c70cd32c0473466198f514929353a43b?pvs=4)
+
 
 ## Setup
 
