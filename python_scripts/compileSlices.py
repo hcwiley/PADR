@@ -22,6 +22,7 @@ py_arg.add_argument('--x_splits', default=2)
 py_arg.add_argument('--y_splits', default=2)
 py_arg.add_argument('--input_dir')
 py_arg.add_argument('--output_dir', default=None)
+py_arg.add_argument('--output_name', default=None)
 py_arg.add_argument('--clear_output', default=False)
 
 args = py_arg.parse_args()
@@ -105,7 +106,12 @@ def main():
   width = int(width)
   height = int(height)
 
-  full_img_path = '{}/full.jpg'.format(output_dir)
+
+  img_name = "full"
+  if args.output_name is not None:
+    img_name = args.output_name
+
+  full_img_path = '{}/{}.jpg'.format(output_dir,img_name)
   print("compiling a full image of size {}x{} to {}".format(
       width, height, full_img_path))
 

@@ -121,6 +121,8 @@ ffmpeg_img2vid_cmd = "{} -framerate {} -pattern_type glob -i '{}/*.jpg' -c:v lib
 run_ml_cmd = '{} {}/run.py --models_dir {} --input_dir {} --output_dir {}'.format(
     python_path, path_to_cyclegan, ml_model_dir, output_images_vid, output_images_ml)
 
+# use ffmpeg to split the video into two separate videos called painting and drawing where drawing is the 512x512 offset x 512 and y 0 and painting is 512x512 offset x 1024 and y 0
+split_videos_cmd='{} -i {} -filter_complex "[0:v]crop=512:512:512:0[drawing];[0:v]crop=512:512:1024:0[painting]" -map "[drawing]" drawing.mp4 -map "[painting]" painting.mp4'.format(ffmpeg_path, output_video)
 
 # getting ready to make a bunch stuff. let's get into position
 if args.clean and os.path.exists(work_dir):
@@ -154,3 +156,7 @@ if not args.dry_run:
 print("running: {}".format(ffmpeg_img2vid_cmd))
 if not args.dry_run:
   subprocess.run(ffmpeg_img2vid_cmd, shell=True)
+
+# split the video into two separate videos called painting and drawing
+if not args.dry_run:
+  subprocess.run(split_videos_cmd, shell=True)

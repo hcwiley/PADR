@@ -17,7 +17,7 @@ py_arg.add_argument('--resize_width', default=None)
 py_arg.add_argument('--resize_height', default=None)
 py_arg.add_argument('--x_splits', default='2')
 py_arg.add_argument('--y_splits', default='2')
-py_arg.add_argument('--crop_size', default=None)
+py_arg.add_argument('--crop_size', default="-1")
 py_arg.add_argument('--random_seed', default=42)
 py_arg.add_argument('--border', default=0.05)
 py_arg.add_argument('--input_dir', default=None)
@@ -26,6 +26,8 @@ py_arg.add_argument('--output_dir', default=None)
 py_arg.add_argument('--clear_output', default=False)
 
 args = py_arg.parse_args()
+
+Image.MAX_IMAGE_PIXELS = None
 
 
 def main():
@@ -81,7 +83,7 @@ def main():
 
   # check if crop_size is set
   crop_size = None
-  if args.crop_size is not None:
+  if int(args.crop_size) > 0:
     crop_size = int(args.crop_size)
 
   # loop over the images
@@ -150,10 +152,13 @@ def main():
     # check if we need to crop the border out
     if args.border is not None:
       border = float(args.border)
-      border_x = int(floor(img.width * border))
-      border_y = int(floor(img.height * border))
-      img = img.crop((border_x, border_y, img.width -
-                     border_x, img.height - border_y))
+      border_right = int(floor(img.width * border))
+      border_top = int(floor(img.height * border))
+      border_left = img.width - border_right
+      border_bottom = img.height - border_top
+      border_rect = (border_right, border_top, border_left, border_bottom)
+      print('border_rect: {}'.format(border_rect))
+      img = img.crop(border_rect)
 
     # get the dimensions of the image
     img_width = img.width

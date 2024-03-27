@@ -38,6 +38,12 @@ Checkpoints/
 *.npy
 mnist-t*.tfrecord*
 datasets/
+assets/
+**/logs/*
+
+# various media and gcode files
+*.svg
+*.gcode
 
 # compiled binaries
 *.o
@@ -53,3 +59,4 @@ datasets/
 # hidden and swap files
 .DS_Store
 ._*
+.*.swp

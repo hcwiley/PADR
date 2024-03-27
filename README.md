@@ -12,6 +12,18 @@ I've installed all my conda reqs to a env named `ldm`
 conda activate ldm
 ```
 
+## python_scripts
+
+Collection of python scripts to run various ML and CV operations in batches.
+
+Also some more bash helpers.
+
+`convertDrawingToGcode.sh` is a very handy script that is okly documented. It relies on the env variables at the top which are easy to modify in the source or you can set the env variables in your terminal session depending on how you want to work. You need to install:
+- [Autotrace](https://autotrace.sourceforge.net/)
+- [vpype](https://github.com/abey79/vpype)
+- [ImageMagick](https://imagemagick.org/index.php)
+- [Juicy GCode](https://github.com/domoszlai/juicy-gcode)
+
 ## Repos i'm into right now
 - https://github.com/hcwiley/CycleGAN-Tensorflow-2
 - https://github.com/hcwiley/pytorch-CycleGAN-and-pix2pix
@@ -20,4 +32,3 @@ conda activate ldm
 ## Sources
 
 - linedraw: https://github.com/LingDong-/linedraw
-- 
